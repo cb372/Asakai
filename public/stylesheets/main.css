@@ -1,0 +1,15 @@
+
+#slideContent {
+    border: 1px solid #eeeeee;
+    padding: 18px;
+}
+.slideContent * {
+    font-size: 24px;
+    padding: 4px 0px;
+}
+
+.page-footer {
+  padding-top: 17px;
+  margin: 18px 0;
+  //border-top: 1px solid #eeeeee;
+}

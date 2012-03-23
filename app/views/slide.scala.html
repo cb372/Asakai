@@ -1,0 +1,44 @@
+@(id: Int, title: String, content: Html, prevId: Option[Int], nextId: Option[Int])
+
+@genPagerItem(slideId: Option[Int], linkId: String, text: String) = {
+    @slideId match {
+        case Some(id) => {
+            <li><a id="@linkId" href="@routes.Slide.slide(id)">@text</a></li>
+        }
+        case None => {
+            <li class="disabled"><a id="@linkId" href="#">@text</a></li>
+        }
+    }
+}
+
+@main(title) {
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(document).keyup(function(e){
+                if (e.which == 37) {
+                    // left arrow
+                    window.location.href = $('#prev').attr('href');
+                } else if (e.which == 39) {
+                    // right arrow
+                    window.location.href = $('#next').attr('href');
+                }
+            });
+        });
+    </script>
+
+    <div class="row">
+        <div class="span8 offset1">
+           <div id="slideContent" class="slideContent">
+                @content
+           </div>
+         </div>
+    </div>
+
+    <div class="page-footer">
+        <ul class="pager">
+            @genPagerItem(prevId, "prev", "Prev")
+            <li><a href="@routes.Slide.contents">Contents</a></li>
+            @genPagerItem(nextId, "next", "Next")
+        </ul>
+    </div>
+}

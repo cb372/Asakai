@@ -1,0 +1,20 @@
+@(slideIdsAndTitles: Seq[(Int, String)])
+
+@main("Slides") {
+
+<table class="table">
+    <thead>
+    <th>#</th>
+    <th>Title</th>
+    </thead>
+    <tbody>
+    @slideIdsAndTitles.map { idAndTitle =>
+        <tr>
+            <td>@idAndTitle._1</td>
+            <td><a href="@routes.Slide.slide(idAndTitle._1)">@idAndTitle._2</a></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+}
