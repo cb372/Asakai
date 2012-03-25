@@ -2,7 +2,7 @@
 #slideContent {
     border: 1px solid #eeeeee;
     padding: 18px;
-    min-height: 450px;
+    min-height: 500px;
 }
 .slideContent * {
     font-size: 32px;

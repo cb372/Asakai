@@ -26,7 +26,7 @@ object Slide extends Controller {
           }
         }
         // md -> HTML変換
-        val html = new PegDownProcessor(Extensions.AUTOLINKS).markdownToHtml(markdown)
+        val html = new PegDownProcessor().markdownToHtml(markdown)
 
         val content = HtmlFormat.raw(html)
         val (prevId, nextId) = getPrevAndNextSlideIds(id)

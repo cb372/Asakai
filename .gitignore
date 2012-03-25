@@ -6,3 +6,4 @@ tmp
 .history
 dist
 *.iml
+.DS_Store
