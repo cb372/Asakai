@@ -1,4 +1,14 @@
-This is your new Play 2.0 application
+Play 2.0サンプル 兼 朝会資料
 =====================================
 
-This file will be packaged with your application, when using `play dist`.
+Play 2.0を紹介するための発表資料をPlayで作ってみました。
+
+* スライドはmarkdown形式で、`slides`フォルダー以下にある
+
+* コントローラはmdファイルを読み込み、HTMLに変換しテンプレートに渡す
+
+* UIにBootstrapを使った
+
+* ちょこっとjQueryも入っている
+
+* 簡単な目次も作れる

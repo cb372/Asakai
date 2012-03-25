@@ -1,4 +1,4 @@
-@(slideIdsAndTitles: Seq[(Int, String)])
+@(slideInfos: Seq[models.SlideInfo])
 
 @main("Slides") {
 
@@ -8,10 +8,10 @@
     <th>Title</th>
     </thead>
     <tbody>
-    @slideIdsAndTitles.map { idAndTitle =>
+    @slideInfos.map { slideInfo =>
         <tr>
-            <td>@idAndTitle._1</td>
-            <td><a href="@routes.Slide.slide(idAndTitle._1)">@idAndTitle._2</a></td>
+            <td>@slideInfo.id</td>
+            <td><a href="@routes.Slide.slide(slideInfo.id)">@slideInfo.title</a></td>
         </tr>
     }
     </tbody>

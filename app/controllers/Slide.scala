@@ -1,20 +1,23 @@
 package controllers
 
 
+import models._
 import io.Source
 import play.api.mvc._
 import play.api.Play
 import Play.current
 import java.io.{File, FilenameFilter}
 import play.api.templates.HtmlFormat
-import org.pegdown.PegDownProcessor
+import org.pegdown.{Extensions, PegDownProcessor}
 
 object Slide extends Controller {
 
-  def slide(i: Int) = Action {
-    val mdFile = Play.getExistingFile("slides/%d.md".format(i))
+  // 指定のIDに街頭するスライドをmdファイルから読み込む
+  def slide(id: Int) = Action {
+    val mdFile = Play.getExistingFile("slides/%d.md".format(id))
     mdFile match {
       case Some(mdFile) => {
+        // スライド内容をmdファイルから読み込む
         val (title, markdown) = withSource(mdFile) {
           src => {
             val title = src.getLines().take(1).toSeq.head
@@ -22,42 +25,45 @@ object Slide extends Controller {
             (title, body)
           }
         }
-        val html = new PegDownProcessor().markdownToHtml(markdown)
+        // md -> HTML変換
+        val html = new PegDownProcessor(Extensions.AUTOLINKS).markdownToHtml(markdown)
+
         val content = HtmlFormat.raw(html)
-        val id = extractSlideId(mdFile.getName)
         val (prevId, nextId) = getPrevAndNextSlideIds(id)
 
-        Ok(views.html.slide(id, title, content, prevId, nextId))
+        Ok(views.html.slide(title, content, prevId, nextId))
       }
+      // mdファイルが見つからない -> 404
       case None => NotFound
     }
   }
 
+  // 目次を作成する
   def contents = Action {
     val slidesDir = Play.getExistingFile("slides")
 
-    val idsAndTitles = slidesDir.map(dir => {
+    val slideInfos = slidesDir.map(dir => {
       // mdファイルのリストを取る
       val mdFiles = dir.listFiles(new FilenameFilter {
         def accept(dir: File, name: String) = name.endsWith(".md")
       })
 
       // 各スライドのIDとタイトルを取得
-      val idsAndTitles: Seq[(Int, String)] = mdFiles.flatMap(file => {
+      val slideInfos: Seq[SlideInfo] = mdFiles.flatMap(file => {
         withSource(file) {
           src =>
             src.getLines().take(1).toSeq.headOption
-        }.map(title => (extractSlideId(file.getName), title))
+        }.map(title => (SlideInfo(extractSlideId(file.getName), title)))
       })
 
       // IDで並び替える
-      idsAndTitles.sortBy(_._1)
-    }).getOrElse(List[(Int, String)]())
+      slideInfos.sortBy(_.id)
+    }).getOrElse(List[SlideInfo]())
 
-    Ok(views.html.contents(idsAndTitles))
+    Ok(views.html.contents(slideInfos))
   }
 
-  private def getPrevAndNextSlideIds(currId: Int) = {
+  private def getPrevAndNextSlideIds(currId: Int): (Option[Int], Option[Int]) = {
     val prev = Play.getExistingFile("slides/%d.md".format(currId - 1)).map(_ => currId - 1)
     val next = Play.getExistingFile("slides/%d.md".format(currId + 1)).map(_ => currId + 1)
     (prev, next)

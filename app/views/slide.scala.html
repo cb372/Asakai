@@ -1,4 +1,4 @@
-@(id: Int, title: String, content: Html, prevId: Option[Int], nextId: Option[Int])
+@(title: String, content: Html, prevId: Option[Int], nextId: Option[Int])
 
 @genPagerItem(slideId: Option[Int], linkId: String, text: String) = {
     @slideId match {
@@ -14,6 +14,7 @@
 @main(title) {
     <script type="text/javascript">
         $(document).ready(function(){
+            // Keybindings to change slide
             $(document).keyup(function(e){
                 if (e.which == 37) {
                     // left arrow
@@ -23,11 +24,14 @@
                     window.location.href = $('#next').attr('href');
                 }
             });
+
+            // make all links inside slide open in a new tab
+            $('#slideContent a').each(function() {$(this).attr('target', '_blank');})
         });
     </script>
 
     <div class="row">
-        <div class="span8 offset1">
+        <div class="span10">
            <div id="slideContent" class="slideContent">
                 @content
            </div>
